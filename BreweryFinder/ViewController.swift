@@ -11,27 +11,31 @@ import MapKit
 import CoreLocation
 
 struct Results: Decodable {
-   let breweries:[Brewery]
+   let totalResults: Int
+   let data:[Brewery]
 }
 struct Brewery: Decodable {
-   let name: String
-   let locality: String
-   let region: String
-   let latitude: Int
-   let longitude: Int
-   let isPrimary: String
-   let inPlanning: String
-   let isClosed: String
-   let openToPublic: String
-   let locationType: String
-   let locationTypeDisplay: String
+   let name: String?
+   let locality: String?
+   let region: String?
+   let latitude: Double?
+   let longitude: Double?
+   let isPrimary: String?
+   let inPlanning: String?
+   let isClosed: String?
+   let openToPublic: String?
+   let locationType: String?
+   let locationTypeDisplay: String?
 }
 
 class ViewController: UIViewController {
     
    
     @IBOutlet weak var mapView: MKMapView!
+    @IBOutlet weak var countLabel: UILabel!
     
+    var lat:Double = 0
+    var long:Double = 0
     let locationManager = CLLocationManager()
     let regionInMeters: Double = 10000
     
@@ -95,7 +99,56 @@ class ViewController: UIViewController {
         mapView.addAnnotation(parthenonAnnotation)
         mapView.addAnnotation(vanderbiltAnnotation)
     }
+    
+    private func addBreweryAnnotations() {
+        
+        let apiString = "https://www.brewerydb.com/browse/map/get-breweries?lat=\(lat)&lng=\(long)&radius=25&key=e47292bba0dce5d44ddb5b6e2f3c7672"
+        
+        guard let url = URL(string:apiString) else
+        { return }
+        
+        URLSession.shared.dataTask(with: url){(data, response, error) in
+            guard let breweryData = data else {return}
+            
+            do {
+                let bData = try JSONDecoder().decode(Results.self, from: breweryData)
+                //print(bData)
+                DispatchQueue.main.async {
+                    for brewSpot in bData.data {
+                        let brewAnnotation = MKPointAnnotation()
+                        brewAnnotation.title = brewSpot.name!
+                        brewAnnotation.coordinate = CLLocationCoordinate2D(latitude: brewSpot.latitude!, longitude: brewSpot.longitude!)
+                        self.mapView.addAnnotation(brewAnnotation)
+                        print(brewSpot.name!)
+                    }
+                    self.countLabel.text = bData.totalResults == 1 ? "You have \(String(bData.totalResults)) brewery" : "You have \(String(bData.totalResults)) breweries"
+                }
+            } catch let jsonErr {
+                print("You've got the following jsonError \(jsonErr)")
+            }
+        }.resume()
+        
+//        let parthenonAnnotation = MKPointAnnotation()
+//        parthenonAnnotation.title = "The Parthenon"
+//        parthenonAnnotation.coordinate = CLLocationCoordinate2D(latitude: 36.1497, longitude: -86.8133)
+//
+//        let vanderbiltAnnotation = MKPointAnnotation()
+//        vanderbiltAnnotation.title = "Vanderbilt University"
+//        vanderbiltAnnotation.coordinate = CLLocationCoordinate2D(latitude: 36.1447, longitude: -86.8027)
+//
+//        mapView.addAnnotation(parthenonAnnotation)
+//        mapView.addAnnotation(vanderbiltAnnotation)
+    }
+    
+    
+    @IBAction func searchByAddress(_ sender: Any) {
+        
+    }
+    
 }
+
+
+
 
 
 extension ViewController: CLLocationManagerDelegate {
@@ -103,9 +156,14 @@ extension ViewController: CLLocationManagerDelegate {
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]){
         guard let location = locations.last else { return }
         let center = CLLocationCoordinate2D(latitude: location.coordinate.latitude, longitude: location.coordinate.longitude)
+        lat = center.latitude
+        long = center.longitude
+        
+        print(lat)
+        print (long)
         let region = MKCoordinateRegion.init(center:center, latitudinalMeters: regionInMeters, longitudinalMeters: regionInMeters)
         mapView.setRegion(region, animated: true)
-        addAnnotations()
+        addBreweryAnnotations()
     }
     
     
