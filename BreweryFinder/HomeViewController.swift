@@ -1,19 +1,32 @@
 //
-//  SearchBrewController.swift
+//  HomeViewController.swift
 //  BreweryFinder
 //
-//  Created by Jason Allen on 7/11/19.
+//  Created by Jason Allen on 7/18/19.
 //  Copyright © 2019 Jason Allen. All rights reserved.
 //
 
 import UIKit
 
-class SearchBrewController: UIViewController {
+class HomeViewController: UIViewController {
 
+    
+    @IBOutlet weak var searchInput: UITextField!
+    @IBAction func searchView(_ sender: Any) {
+        performSegue(withIdentifier: "searchSegue", sender: self)
+    }
     override func viewDidLoad() {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        
+        if segue.identifier == "searchSegue",
+            let destinationVC = segue.destination as? SearchViewController {
+            destinationVC.searchTextString = searchInput.text!
+        }
     }
     
 

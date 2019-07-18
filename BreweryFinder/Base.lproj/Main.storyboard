@@ -13,7 +13,7 @@
         <!--MainView Controller-->
         <scene sceneID="dcd-qa-oba">
             <objects>
-                <viewController id="Thk-0u-6fu" userLabel="MainView Controller" sceneMemberID="viewController">
+                <viewController id="Thk-0u-6fu" userLabel="MainView Controller" customClass="HomeViewController" customModule="BreweryFinder" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="4r5-EH-8gu">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -44,7 +44,7 @@
                                     <color key="titleColor" red="1" green="0.93189083080000001" blue="0.018187905090000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 </state>
                                 <connections>
-                                    <action selector="searchByAddress:" destination="QTh-t7-pLY" eventType="touchUpInside" id="x1A-52-Hn5"/>
+                                    <action selector="searchView:" destination="Thk-0u-6fu" eventType="touchUpInside" id="iuA-C7-XVS"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="hlA-zF-0oE">
@@ -63,34 +63,44 @@
                         <viewLayoutGuide key="safeArea" id="xQQ-pF-aIZ"/>
                     </view>
                     <connections>
-                        <segue destination="2Bt-en-0tZ" kind="show" identifier="searchBrewSegue" id="4oG-dJ-yUy"/>
+                        <outlet property="searchInput" destination="EPj-nu-cEG" id="US5-16-MjM"/>
+                        <segue destination="2Bt-en-0tZ" kind="show" identifier="searchSegue" id="WxC-8P-Q2L"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ELs-E3-xNq" userLabel="First Responder" sceneMemberID="firstResponder"/>
-                <exit id="QTh-t7-pLY" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
             <point key="canvasLocation" x="876.81159420289862" y="12.723214285714285"/>
         </scene>
         <!--SearchBrewController-->
         <scene sceneID="jQE-lj-RZd">
             <objects>
-                <viewController title="SearchBrewController" id="2Bt-en-0tZ" sceneMemberID="viewController">
+                <viewController title="SearchBrewController" id="2Bt-en-0tZ" customClass="SearchViewController" customModule="BreweryFinder" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="izE-af-fMx">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="barrelBackground" translatesAutoresizingMaskIntoConstraints="NO" id="NEh-9I-mRm">
-                                <rect key="frame" x="-20" y="-116" width="453" height="1127"/>
+                                <rect key="frame" x="-19" y="-115" width="453" height="1127"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </imageView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Text" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9Jb-QY-KiI">
+                                <rect key="frame" x="20" y="491" width="374" height="21"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" red="1" green="0.93189083080000001" blue="0.018187905090000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" red="0.42366090416908264" green="0.20834240317344666" blue="0.0049174949526786804" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <viewLayoutGuide key="safeArea" id="AXd-pa-evY"/>
                     </view>
+                    <connections>
+                        <outlet property="searchText" destination="9Jb-QY-KiI" id="lWg-x9-8NX"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="vfi-op-Iqf" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1894" y="-10"/>
+            <point key="canvasLocation" x="1892.753623188406" y="-10.044642857142856"/>
         </scene>
         <!--View Controller-->
         <scene sceneID="tne-QT-ifu">
@@ -105,14 +115,14 @@
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </imageView>
                             <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="D0F-cE-I8g">
-                                <rect key="frame" x="20" y="44" width="374" height="572"/>
+                                <rect key="frame" x="20" y="99" width="374" height="572"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <connections>
                                     <outlet property="delegate" destination="BYZ-38-t0r" id="dkd-gj-Uzu"/>
                                 </connections>
                             </mapView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Total Results" textAlignment="natural" lineBreakMode="characterWrap" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="KW8-Bh-f9d">
-                                <rect key="frame" x="20" y="630" width="374" height="21"/>
+                                <rect key="frame" x="20" y="685" width="374" height="21"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" red="1" green="0.93189083080000001" blue="0.018187905090000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
