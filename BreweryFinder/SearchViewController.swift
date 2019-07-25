@@ -131,11 +131,12 @@ class SearchViewController: UIViewController {
         { return }
         
         URLSession.shared.dataTask(with: url){(data, response, error) in
+            print("JSON Data is : \(data!)")
             guard let breweryData = data else {return}
             
             do {
                 let bData = try JSONDecoder().decode(results.self, from: breweryData)
-                //print(bData)
+                
                 DispatchQueue.main.async {
                     for brewSpot in bData.data {
                         let brewAnnotation = MKPointAnnotation()
