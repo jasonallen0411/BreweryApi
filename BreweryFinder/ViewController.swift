@@ -12,7 +12,7 @@ import CoreLocation
 
 struct Results: Decodable {
    let totalResults: Int
-   let data:[Brewery]
+   let data:[Brewery]?
 }
 struct Brewery: Decodable {
    let name: String?
@@ -114,7 +114,7 @@ class ViewController: UIViewController {
                 let bData = try JSONDecoder().decode(Results.self, from: breweryData)
                 //print(bData)
                 DispatchQueue.main.async {
-                    for brewSpot in bData.data {
+                    for brewSpot in bData.data! {
                         let brewAnnotation = MKPointAnnotation()
                         brewAnnotation.title = brewSpot.name!
                         brewAnnotation.coordinate = CLLocationCoordinate2D(latitude: brewSpot.latitude!, longitude: brewSpot.longitude!)

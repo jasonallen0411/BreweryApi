@@ -58,6 +58,7 @@ class SearchViewController: UIViewController {
                 print("Lat: \(coordinate.latitude) -- Long:\(coordinate.longitude)")
                 self.svlat = coordinate.latitude
                 self.svlong = coordinate.longitude
+                self.checkLocationServices()
                 print("SVLat: \(self.svlat) -- SVLong:\(self.svlong)")
             }
         })
@@ -78,7 +79,7 @@ class SearchViewController: UIViewController {
             }
 
         }
-        checkLocationServices()
+        
         
     }
     func setupLocationManager() {
@@ -132,6 +133,7 @@ class SearchViewController: UIViewController {
         
         URLSession.shared.dataTask(with: url){(data, response, error) in
             print("JSON Data is : \(data!)")
+            print("JSON Data is : \(url)")
             guard let breweryData = data else {return}
             
             do {
