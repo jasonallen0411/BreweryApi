@@ -16,6 +16,9 @@ struct results: Decodable {
 }
 struct Brewery2: Decodable {
     let name: String?
+    let phone: String?
+    let website: String?
+    let streetAddress: String?
     let locality: String?
     let region: String?
     let latitude: Double?
@@ -71,6 +74,9 @@ class SearchViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        sMapView.delegate = self as! MKMapViewDelegate
+        
         getLocation(forPlaceCalled: searchTextString)
         { placemark in
             if let place = placemark {
@@ -123,6 +129,7 @@ class SearchViewController: UIViewController {
             break
         }
     }
+    
         
      func addBreweryAnnotations() {
         
@@ -143,11 +150,19 @@ class SearchViewController: UIViewController {
                     for brewSpot in bData.data {
                         let brewAnnotation = MKPointAnnotation()
                         brewAnnotation.title = brewSpot.name
+                        brewAnnotation.subtitle = brewSpot.streetAddress
                         brewAnnotation.coordinate = CLLocationCoordinate2D(latitude: brewSpot.latitude!, longitude: brewSpot.longitude!)
                         self.sMapView.addAnnotation(brewAnnotation)
                         print(brewSpot.name)
                     }
-                    self.searchText.text = bData.totalResults == 1 ? "You have \(bData.totalResults!) brewery" : "You have \(bData.totalResults!) breweries"
+//                    self.searchText.text = bData.totalResults == 1 ? "You have \(bData.totalResults!) brewery" : "You have \(bData.totalResults!) breweries"
+                    if(bData.totalResults == 1){
+                        self.searchText.text = "\(self.searchTextString) has \(bData.totalResults!) brewery"
+                    }
+                    else{
+                        self.searchText.text = "\(self.searchTextString) has \(bData.totalResults!) breweries"
+                    }
+                    
                 }
             } catch let jsonErr {
                 print("You've got the following jsonError \(jsonErr)")
@@ -264,4 +279,30 @@ extension SearchViewController: CLLocationManagerDelegate {
     }
 }
 
+extension SearchViewController: MKMapViewDelegate {
+    func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
+        let identifier = "MyPin"
+        
+        if annotation is MKUserLocation {
+            return nil
+        }
+        
+        var annotationView = mapView.dequeueReusableAnnotationView(withIdentifier: identifier)
+        
+        if annotationView == nil {
+            annotationView = MKAnnotationView(annotation: annotation, reuseIdentifier: identifier)
+            annotationView?.canShowCallout = true
+            annotationView?.image = UIImage(named: "beerBottle2.png")
+            
+            // if you want a disclosure button, you'd might do something like:
+            //
+            // let detailButton = UIButton(type: .detailDisclosure)
+            // annotationView?.rightCalloutAccessoryView = detailButton
+        } else {
+            annotationView?.annotation = annotation
+        }
+        
+        return annotationView
+    }
+}
 

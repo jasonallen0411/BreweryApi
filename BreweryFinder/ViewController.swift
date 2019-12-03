@@ -16,6 +16,7 @@ struct Results: Decodable {
 }
 struct Brewery: Decodable {
    let name: String?
+   let streetAddress: String?
    let locality: String?
    let region: String?
    let latitude: Double?
@@ -41,6 +42,8 @@ class ViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        mapView.delegate = self as! MKMapViewDelegate
         checkLocationServices()
         // mapView.delegate = self
     }
@@ -117,6 +120,7 @@ class ViewController: UIViewController {
                     for brewSpot in bData.data! {
                         let brewAnnotation = MKPointAnnotation()
                         brewAnnotation.title = brewSpot.name!
+                        brewAnnotation.subtitle = brewSpot.streetAddress
                         brewAnnotation.coordinate = CLLocationCoordinate2D(latitude: brewSpot.latitude!, longitude: brewSpot.longitude!)
                         self.mapView.addAnnotation(brewAnnotation)
                         print(brewSpot.name!)
@@ -171,6 +175,34 @@ extension ViewController: CLLocationManagerDelegate {
         checkLocationAuthorization()
     }
 }
+
+extension ViewController: MKMapViewDelegate {
+    func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
+        let identifier = "MyPin"
+        
+        if annotation is MKUserLocation {
+            return nil
+        }
+        
+        var annotationView = mapView.dequeueReusableAnnotationView(withIdentifier: identifier)
+        
+        if annotationView == nil {
+            annotationView = MKAnnotationView(annotation: annotation, reuseIdentifier: identifier)
+            annotationView?.canShowCallout = true
+            annotationView?.image = UIImage(named: "beerBottle2.png")
+            
+            // if you want a disclosure button, you'd might do something like:
+            //
+            // let detailButton = UIButton(type: .detailDisclosure)
+            // annotationView?.rightCalloutAccessoryView = detailButton
+        } else {
+            annotationView?.annotation = annotation
+        }
+        
+        return annotationView
+    }
+}
+
 
 // MKDelegate Stuff
 
